@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  mimo-rag-api:
+    build: .
+    container_name: mimo-rag-api
+    ports:
+      - "8000:8000"
+    environment:
+      - MIMO_API_KEY=${MIMO_API_KEY}
+      - MIMO_API_BASE_URL=${MIMO_API_BASE_URL}
+      - MIMO_MODEL=${MIMO_MODEL}
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: mimo-rag-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:
